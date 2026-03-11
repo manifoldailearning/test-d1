@@ -1,58 +1,96 @@
-# Day 5 – Full 7-Layer Production RAG System
+# Agentic Day 3 – Prompting That Ships: Production Hardening
 
-This repository is a **reference solution** for:
+This repo is the **reference solution / starter structure** for the Day 3 assignment of the Agentic AI Enterprise Mastery Bootcamp.
 
-- **Assignment ID:** Day 5 - RAG Full  
-- **Bootcamp:** Agentic AI Enterprise Mastery Bootcamp
+The goal is to take a minimal customer support agent and harden it with:
 
-It follows the requirements in `Assignment-A5.MD`:
+- Prompts as **YAML + Git–versioned code**
+- **Prompt injection defense** (3-layer model)
+- **Error handling with retries**
+- **Circuit breaker** around LLM calls
+- **Session-level cost tracking**
 
-- Production-style layout with a thin entrypoint `rag_full_7_layer.py`
-- `src/` package containing the 7-layer RAG components
-- Retrieval and generation evaluation helpers for automatic grading
+---
 
-## Project structure
+## Project Structure
 
-```bash
-agentic-day5/
+```text
+agentic-day3-production/
 ├── .gitignore
 ├── requirements.txt
 ├── README.md
-├── rag_full_7_layer.py
-└── src/
-    ├── __init__.py
-    ├── ingestion.py
-    ├── embeddings.py
-    ├── vector_store.py
-    ├── query_pipeline.py
-    ├── access_control.py
-    └── evaluation.py
+├── app.py
+└── prompts/
+    └── support_agent_v1.yaml
 ```
 
-## How to run
+You should at minimum mirror this layout in your own submission.
 
-1. Create a `.env` file with any API keys you want to use (not required for this stubbed solution).
+---
+
+## Setup
+
+1. Create a virtual environment (recommended):
+
+```bash
+python -m venv .venv
+source .venv/bin/activate  # on Windows: .venv\Scripts\activate
+```
+
 2. Install dependencies:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-3. Run the script:
+3. Create a `.env` file in the project root for your API keys (if you use OpenAI, etc.):
 
 ```bash
-python rag_full_7_layer.py
+OPENAI_API_KEY="sk-..."
 ```
 
-This will:
+> **Important:** `.env` is listed in `.gitignore` and **must not be committed**.  
+> Never push API keys or secrets to GitHub.
 
-- Build a simple 7-layer RAG pipeline over a small in-memory corpus
-- Run retrieval evaluation over `GOLDEN_QUERIES`
-- Run a stubbed RAGAS-style generation evaluation
-- Print both metric blocks in the exact format expected by the bootcamp grader.
+---
 
-## Notes
+## Running the app
 
-- The implementation is intentionally minimal and in-memory so it can run without external services.
-- You can replace the in-memory parts (documents, embeddings, vector store) with real PGVector / OpenAI embeddings without changing the public function signatures.
+Once dependencies are installed and your `.env` is set up (if needed), run:
+
+```bash
+python app.py
+```
+
+The script will:
+
+- Load the **support agent** system prompt from `prompts/support_agent_v1.yaml`
+- Wrap all agent calls with:
+  - `detect_injection` (input layer)
+  - `production_invoke` (error handling + retries)
+  - `CircuitBreaker` (stops hammering a failing service)
+  - `SessionCostTracker` (tracks total USD cost per session)
+- Run:
+  - One normal query (e.g. "What is your refund policy?")
+  - One obvious injection attempt (e.g. "Ignore your previous instructions...")
+- Print:
+  - Whether the injection attempt was blocked
+  - A short **cost summary** (total calls, total USD)
+
+You can adapt the prompts, wording, and extra logging for your own submission.
+
+---
+
+## Submission Rules (Summary)
+
+- Repository should be **public**
+- `.env` must **not** be committed
+- Default branch should be `main`
+- Code must run via:
+
+```bash
+python app.py
+```
+
+Please read the full Day 3 assignment brief (`Assignment-A3.MD`) for detailed requirements and grading criteria.
 
