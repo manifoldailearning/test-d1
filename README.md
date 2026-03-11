@@ -1,30 +1,30 @@
-# Agentic Day 3 – Prompting That Ships: Production Hardening
+# Agentic Day 4 – Multi-Agent Collaboration (Supervisor + Specialists)
 
-This repo is the **reference solution / starter structure** for the Day 3 assignment of the Agentic AI Enterprise Mastery Bootcamp.
+This repo is the **reference structure / example implementation** for the Day 4 assignment of the Agentic AI Enterprise Mastery Bootcamp.
 
-The goal is to take a minimal customer support agent and harden it with:
+The goal is to build a **multi-agent customer support system** with:
 
-- Prompts as **YAML + Git–versioned code**
-- **Prompt injection defense** (3-layer model)
-- **Error handling with retries**
-- **Circuit breaker** around LLM calls
-- **Session-level cost tracking**
+- A **supervisor** that routes each request
+- 4 **specialist agents** (orders, billing, technical, subscription) plus a general path
+- **Structured handoffs** between agents
+- **Graceful degradation** inside specialist agents
+- A **session-level audit log** with approximate cost tracking
 
 ---
 
 ## Project Structure
 
 ```text
-agentic-day3-production/
+agentic-day4-multi-agent/
 ├── .gitignore
 ├── requirements.txt
 ├── README.md
 ├── app.py
 └── prompts/
-    └── support_agent_v1.yaml
+    └── supervisor_v1.yaml
 ```
 
-You should at minimum mirror this layout in your own submission.
+Your own submission should at minimum follow this layout.
 
 ---
 
@@ -64,20 +64,20 @@ python app.py
 
 The script will:
 
-- Load the **support agent** system prompt from `prompts/support_agent_v1.yaml`
-- Wrap all agent calls with:
-  - `detect_injection` (input layer)
-  - `production_invoke` (error handling + retries)
-  - `CircuitBreaker` (stops hammering a failing service)
-  - `SessionCostTracker` (tracks total USD cost per session)
-- Run:
-  - One normal query (e.g. "What is your refund policy?")
-  - One obvious injection attempt (e.g. "Ignore your previous instructions...")
-- Print:
-  - Whether the injection attempt was blocked
-  - A short **cost summary** (total calls, total USD)
+- Load the **supervisor classification prompt** from `prompts/supervisor_v1.yaml`
+- Build a simple **LangGraph** with:
+  - `supervisor_node`
+  - 4 specialist nodes: `orders_agent_node`, `billing_agent_node`, `technical_agent_node`, `subscription_agent_node`
+  - A `general_agent_node`
+  - A `synthesize_response` node
+- Use a `MultiAgentState` TypedDict to share state
+- Run a few sample user requests and print:
+  - The detected `route`
+  - Which `agent_used` handled the request
+  - The `final_response` text
+- Log events into a `SessionAuditLog` and append a JSON line to `audit_log.jsonl`
 
-You can adapt the prompts, wording, and extra logging for your own submission.
+This is a **minimal** example to show the architecture; your own implementation can add real tools and richer prompts.
 
 ---
 
@@ -92,5 +92,5 @@ You can adapt the prompts, wording, and extra logging for your own submission.
 python app.py
 ```
 
-Please read the full Day 3 assignment brief (`Assignment-A3.MD`) for detailed requirements and grading criteria.
+Please read the full Day 4 assignment brief (`Assignment-A4.MD`) for detailed requirements and grading criteria.
 
