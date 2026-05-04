@@ -1,0 +1,73 @@
+# Agent contracts (script Pattern 2) — loaded at runtime, not hardcoded in Python.
+billing_agent:
+  agent_name: billing_agent
+  responsibility: Handle payment failures, duplicate charges, invoices, and refund status.
+  allowed_tools:
+    - lookup_transaction
+    - request_refund
+  forbidden_actions:
+    - Do not approve refunds above $500 automatically.
+    - Do not change subscription plan.
+    - Do not provide legal or tax advice.
+  input_schema:
+    user_request: str
+    context: dict
+    priority: low | normal | high
+  output_schema:
+    status: resolved | needs_more_info | escalated
+    answer: str
+    confidence: float
+    tools_used: list[str]
+    requires_human: bool
+  fallback_behavior: If payment API fails, return safe message and escalate if duplicate charge is suspected.
+
+orders_agent:
+  agent_name: orders_agent
+  responsibility: Order status, tracking, returns, delivery.
+  allowed_tools:
+    - get_order
+    - submit_return
+  forbidden_actions:
+    - Do not issue refunds.
+  input_schema:
+    user_request: str
+  output_schema:
+    status: resolved | needs_more_info | escalated
+    answer: str
+    confidence: float
+    tools_used: list[str]
+    requires_human: bool
+  fallback_behavior: If order API fails, explain limitation and offer human follow-up.
+
+technical_agent:
+  agent_name: technical_agent
+  responsibility: App bugs, crashes, login issues.
+  allowed_tools:
+    - create_ticket
+  forbidden_actions:
+    - Do not access billing systems.
+  input_schema:
+    user_request: str
+  output_schema:
+    status: resolved | needs_more_info | escalated
+    answer: str
+    confidence: float
+    tools_used: list[str]
+    requires_human: bool
+  fallback_behavior: If ticketing fails, capture summary and escalate.
+
+general_agent:
+  agent_name: general_agent
+  responsibility: Generic FAQs and safe triage.
+  allowed_tools: []
+  forbidden_actions:
+    - Do not execute refunds or change orders.
+  input_schema:
+    user_request: str
+  output_schema:
+    status: resolved | needs_more_info | escalated
+    answer: str
+    confidence: float
+    tools_used: list[str]
+    requires_human: bool
+  fallback_behavior: Safe concise answers only.

@@ -1,6 +1,6 @@
-python-dotenv
 langgraph
-langchain
+langchain-core
 langchain-openai
+pydantic
 pyyaml
-
+python-dotenv

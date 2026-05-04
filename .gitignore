@@ -1,5 +1,5 @@
+# Local secrets
 .env
-__pycache__/
-.pytest_cache/
-*.pyc
 
+# Structured trace JSON emitted at end of each graph run (default: ./traces)
+traces/
