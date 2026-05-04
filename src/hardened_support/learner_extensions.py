@@ -2,8 +2,10 @@
 Assignment A7 — learner extensions (deterministic routing + combined guardrails).
 
 Implement the functions and constants below. The auto-grader imports this module
-without calling OpenAI. Keep imports lightweight: you may import from
-``src.hardened_support.guardrails`` only (plus stdlib).
+as ``src.hardened_support.learner_extensions`` only — the file must live at
+``src/hardened_support/learner_extensions.py`` (not at the repository root).
+
+You may import from ``src.hardened_support.guardrails`` only (plus stdlib).
 """
 from __future__ import annotations
 

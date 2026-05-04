@@ -1,6 +1,9 @@
 ## Production hardening multi-agent systems (working code)
 
-> **Bootcamp Assignment A7:** implement `src/hardened_support/learner_extensions.py` using the brief in the course pack (**`Assignment-A7/Assignment-A7.MD`**). Instructor reference: **`Assignment-A7/solution/learner_extensions.py`** (copy paths relative to the full `Learner-Deliverable` folder).
+> **Bootcamp Assignment A7:** implement **`src/hardened_support/learner_extensions.py`** using the brief in the course pack (**`Assignment-A7/Assignment-A7.MD`**). Instructor reference: **`Assignment-A7/solution/learner_extensions.py`** (copy into the path below, not the repo root).
+>
+> **Auto-grader path (required):** `src/hardened_support/learner_extensions.py`  
+> **Wrong:** `learner_extensions.py` at the repository root — Python never imports it as `src.hardened_support.learner_extensions`, so the grader still sees the stub and reports `NotImplementedError`.
 
 Runnable reference for `3- production_hardening_multi_agent_systems_class_script.md`: routing evaluation, route confidence, agent contracts, guardrails before supervisor, structured specialist output (Pydantic), in-graph events (`trace_id`, `handoff_id`), **JSON trace files** (`json.dump` per run), runtime limits, model policy, escalation rules, and a small integration test set.
 
